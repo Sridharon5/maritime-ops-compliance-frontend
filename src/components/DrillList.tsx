@@ -1,0 +1,35 @@
+import { styles } from "../constants";
+import type { CrewMember, SafetyDrill, Ship } from "../types";
+import type { EntityMap } from "../ui-types";
+import { formatCrewNames } from "../utils/collections";
+
+type DrillListProps = {
+  drills: SafetyDrill[];
+  shipById: EntityMap<Ship>;
+  crewById: EntityMap<CrewMember>;
+  onAttendance: (id: string) => void;
+  onComplete: (id: string) => void;
+};
+
+export function DrillList({ drills, shipById, crewById, onAttendance, onComplete }: DrillListProps) {
+  return (
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {drills.map((drill) => (
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" key={drill.id}>
+          <h3 className="text-lg font-extrabold text-slate-950">{drill.type}</h3>
+          <p className="mt-2 text-sm text-slate-600">
+            {shipById[drill.shipId]?.name ?? "Unknown ship"} | {drill.scheduledDate} | {drill.status}
+          </p>
+          <p className="mt-3 text-sm text-slate-700">Assigned: {formatCrewNames(drill.assignedCrewIds, crewById)}</p>
+          <p className="mt-1 text-sm font-bold text-slate-800">
+            Attendance: {drill.attendanceCrewIds.length}/{drill.assignedCrewIds.length}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <button className={styles.button} onClick={() => onAttendance(drill.id)} type="button">Mark Attendance</button>
+            <button className={styles.secondaryButton} onClick={() => onComplete(drill.id)} type="button">Submit Completion</button>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
+}

@@ -1,0 +1,196 @@
+/**
+ * Maritime Enterprise Design Tokens — single source of truth.
+ * Derived from recommended maritime enterprise palette (primary navy / secondary teal).
+ *
+ * Edit hues ONLY here. Components consume Tailwind utilities mapped in styles.css @theme.
+ *
+ * Layout: --layout-sidebar-width, --layout-navbar-min-height, --radius-* (also used in CSS).
+ */
+
+:root {
+  --layout-sidebar-width: 260px;
+  --layout-navbar-min-height: 72px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+
+  /* ----- PRIMARY (ocean / maritime brand) ----- */
+  --palette-primary-900: #0b1f33;
+  --palette-primary-800: #12314d;
+  --palette-primary-700: #184266;
+  --palette-primary-600: #1e5b8a;
+  --palette-primary-500: #2874a6;
+  --palette-primary-400: #4192c7;
+  --palette-primary-300: #72b5e3;
+  --palette-primary-200: #b6d9f2;
+  --palette-primary-100: #eaf4fb;
+
+  /* ----- SECONDARY (teal marine accent) ----- */
+  --palette-secondary-700: #006d77;
+  --palette-secondary-600: #008891;
+  --palette-secondary-500: #00a3ad;
+  --palette-secondary-400: #33bdc5;
+  --palette-secondary-300: #7ed6db;
+  --palette-secondary-200: #c7eef0;
+  --palette-secondary-100: #edf9fa;
+
+  /* ----- NEUTRAL SLATE ----- */
+  --palette-gray-900: #1b1f24;
+  --palette-gray-800: #2b3138;
+  --palette-gray-700: #414a53;
+  --palette-gray-600: #5b6570;
+  --palette-gray-500: #7a8591;
+  --palette-gray-400: #a1aab3;
+  --palette-gray-300: #c8ced6;
+  --palette-gray-200: #e4e8ec;
+  --palette-gray-100: #f4f7fa;
+  --palette-gray-50: #fafcfd;
+
+  /* ----- STATUS ----- */
+  --palette-success-dark: #0b6b3a;
+  --palette-success: #16a34a;
+  --palette-success-light: #dcfce7;
+  --palette-warning-dark: #a16207;
+  --palette-warning: #f59e0b;
+  --palette-warning-light: #fef3c7;
+  --palette-danger-dark: #991b1b;
+  --palette-danger: #dc2626;
+  --palette-danger-light: #fee2e2;
+  --palette-info-dark: #1d4ed8;
+  --palette-info: #2563eb;
+  --palette-info-light: #dbeafe;
+
+  /* ----- COMPLIANCE SEMANTICS ----- */
+  --palette-compliant: #16a34a;
+  --palette-partially-compliant: #f59e0b;
+  --palette-non-compliant: #dc2626;
+
+  /* ----- SPECIAL MARITIME ----- */
+  --palette-ocean-blue: #1565c0;
+  --palette-sea-green: #00897b;
+  --palette-storm-gray: #546e7a;
+  --palette-harbor-blue: #0f4c81;
+
+  /* ----- SURFACES (light enterprise shell) ----- */
+  --palette-app-bg: #f4f7fa;
+  --palette-card-bg: #ffffff;
+  --palette-sidebar-bg: #0b1f33;
+  --palette-sidebar-text: #ffffff;
+  --palette-sidebar-muted: rgb(255 255 255 / 0.72);
+  --palette-sidebar-hover: rgb(255 255 255 / 0.08);
+  --palette-sidebar-active-bg: #1e5b8a;
+  --palette-sidebar-border: rgb(255 255 255 / 0.1);
+
+  /** Header strip — deep maritime navy (reads with sidebar, not whitish) */
+  --palette-header-bg-start: #163554;
+  --palette-header-bg-mid: #102a42;
+  --palette-header-bg-end: #0b1f33;
+  --palette-header-bg: #0f2740;
+
+  --palette-table-header-bg: #eef4f8;
+  --palette-table-header-fg: #1b1f24;
+  --palette-table-row-even: #ffffff;
+  --palette-table-row-odd: #fafcfd;
+  --palette-table-row-hover: #f8fbfd;
+
+  --palette-border-light: #e2e8f0;
+  --palette-border-medium: #cbd5e1;
+
+  --palette-text-primary: #1b1f24;
+  --palette-text-secondary: #5b6570;
+  --palette-text-muted: #7a8591;
+
+  /* ----- CHARTS ----- */
+  --palette-chart-maintenance: var(--palette-primary-600);
+  --palette-chart-drills: var(--palette-secondary-600);
+  --palette-chart-overall: var(--palette-compliant);
+
+  /* ----- LEGACY SEMANTIC BRIDGE (existing utility names) ----- */
+  --palette-brand-50: #f7fbfd;
+  --palette-brand-100: var(--palette-primary-100);
+  --palette-brand-200: var(--palette-primary-200);
+  --palette-brand-300: var(--palette-primary-300);
+  --palette-brand-400: var(--palette-primary-400);
+  --palette-brand-500: var(--palette-primary-500);
+  --palette-brand-600: var(--palette-primary-600);
+  --palette-brand-700: var(--palette-primary-700);
+  --palette-brand-800: var(--palette-primary-800);
+  --palette-brand-900: var(--palette-primary-900);
+  --palette-brand-950: #061018;
+
+  --palette-canvas-body: var(--palette-app-bg);
+  --palette-canvas-elevated: var(--palette-card-bg);
+  --palette-canvas-sidebar: var(--palette-sidebar-bg);
+  --palette-canvas-muted: var(--palette-gray-100);
+  --palette-canvas-row: var(--palette-gray-50);
+
+  --palette-line-subtle: var(--palette-gray-200);
+  --palette-line-default: var(--palette-border-light);
+  --palette-line-strong: var(--palette-border-medium);
+
+  --palette-ink-heading: var(--palette-text-primary);
+  --palette-ink-body: var(--palette-text-secondary);
+  --palette-ink-muted: var(--palette-text-muted);
+  --palette-ink-faint: var(--palette-gray-500);
+
+  --palette-success-soft: var(--palette-success-light);
+  --palette-success-fg: var(--palette-success-dark);
+  --palette-risk-soft: var(--palette-danger-light);
+  --palette-risk-fg: var(--palette-danger-dark);
+  --palette-notice-soft: var(--palette-info-light);
+  --palette-notice-border: #93c5fd;
+  --palette-notice-fg: var(--palette-info-dark);
+
+  --palette-btn-secondary-bg: var(--palette-secondary-600);
+  --palette-btn-secondary-hover: var(--palette-secondary-700);
+
+  --palette-scrim: rgb(11 31 51 / 0.48);
+}
+
+.dark {
+  --palette-app-bg: #121518;
+  --palette-card-bg: #1b1f24;
+  /** Muted / zebra surfaces — must stay dark (was still mapped to light gray-100/50) */
+  --palette-canvas-muted: #252b34;
+  --palette-canvas-row: #1e242d;
+  --palette-sidebar-bg: #0b1f33;
+  --palette-sidebar-text: #f4f7fa;
+  --palette-sidebar-muted: rgb(244 247 250 / 0.72);
+  --palette-sidebar-hover: rgb(255 255 255 / 0.08);
+  --palette-sidebar-active-bg: #2874a6;
+  --palette-sidebar-border: rgb(255 255 255 / 0.12);
+
+  --palette-header-bg-start: #161f2e;
+  --palette-header-bg-mid: #121a26;
+  --palette-header-bg-end: #0f1622;
+  --palette-header-bg: #131c29;
+
+  --palette-table-header-bg: #243242;
+  --palette-table-header-fg: #f4f7fa;
+  --palette-table-row-even: #1b1f24;
+  --palette-table-row-odd: #222830;
+  --palette-table-row-hover: #2a3138;
+
+  --palette-border-light: #2f3541;
+  --palette-border-medium: #3d4450;
+
+  --palette-text-primary: #f4f7fa;
+  --palette-text-secondary: #c8ced6;
+  --palette-text-muted: #a1aab3;
+
+  --palette-chart-maintenance: var(--palette-primary-400);
+  --palette-chart-drills: var(--palette-secondary-400);
+  --palette-chart-overall: #4ade80;
+
+  --palette-success-soft: rgb(34 197 94 / 0.18);
+  --palette-success-fg: #bbf7d0;
+  --palette-risk-soft: rgb(248 113 113 / 0.18);
+  --palette-risk-fg: #fecaca;
+  --palette-notice-soft: rgb(96 165 250 / 0.15);
+  --palette-notice-border: rgb(96 165 250 / 0.35);
+  --palette-notice-fg: #bfdbfe;
+
+  --palette-scrim: rgb(0 0 0 / 0.62);
+}

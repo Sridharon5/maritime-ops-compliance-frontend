@@ -1,4 +1,8 @@
-import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import type { DrillStatusFilter } from "../types";
+import type { InnerTabDef } from "./InnerTabs";
+import { InnerTabs } from "./InnerTabs";
+import { Pagination } from "./Pagination";
 import { styles } from "../constants";
 import type { CrewMember, SafetyDrill, Ship } from "../types";
 import type { DrillForm, EntityMap } from "../ui-types";
@@ -6,17 +10,34 @@ import { Dialog } from "./Dialog";
 import { DrillList } from "./DrillList";
 import { ShipFilterSelect } from "./ShipFilterSelect";
 
+const drillStatusTabs: readonly InnerTabDef<DrillStatusFilter>[] = [
+  { id: "", label: "All" },
+  { id: "Scheduled", label: "Scheduled" },
+  { id: "Completed", label: "Completed" }
+];
+
 type DrillPanelProps = {
   crew: CrewMember[];
   crewById: EntityMap<CrewMember>;
   drillForm: DrillForm;
   drills: SafetyDrill[];
+  page: number;
+  pageSize: number;
+  scheduledFrom: string;
+  scheduledTo: string;
+  selectedDrillStatus: DrillStatusFilter;
   shipById: EntityMap<Ship>;
+  shipFilterId: string;
   ships: Ship[];
-  onAttendance: (id: string) => void;
-  onComplete: (id: string) => void;
+  total: number;
   onCreateDrill: () => Promise<void>;
   onDrillFormChange: (form: DrillForm) => void;
+  onDrillStatusFilterChange: (status: DrillStatusFilter) => void;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+  onScheduledFromChange: (value: string) => void;
+  onScheduledToChange: (value: string) => void;
+  onShipFilterChange: (shipId: string) => void;
 };
 
 export function DrillPanel({
@@ -24,43 +45,57 @@ export function DrillPanel({
   crewById,
   drillForm,
   drills,
+  page,
+  pageSize,
+  scheduledFrom,
+  scheduledTo,
+  selectedDrillStatus,
   shipById,
+  shipFilterId,
   ships,
-  onAttendance,
-  onComplete,
+  total,
   onCreateDrill,
-  onDrillFormChange
+  onDrillFormChange,
+  onDrillStatusFilterChange,
+  onPageChange,
+  onPageSizeChange,
+  onScheduledFromChange,
+  onScheduledToChange,
+  onShipFilterChange
 }: DrillPanelProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [shipFilterId, setShipFilterId] = useState("");
-
-  const filteredDrills = useMemo(
-    () => drills.filter((drill) => !shipFilterId || drill.shipId === shipFilterId),
-    [drills, shipFilterId]
-  );
 
   return (
     <section className={styles.panel}>
-      <div className="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-teal-600 dark:text-teal-300">Safety readiness</p>
-          <h2 className="mt-2 text-2xl font-extrabold text-slate-950 dark:text-white">Safety Drill Management</h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Schedule drills, track attendance and close completion evidence.</p>
+      <div className={styles.pageHeadingRow}>
+        <div className={styles.pageHeadingCluster}>
+          <span className={styles.pageHeadingAccent} aria-hidden />
+          <h2 className={styles.pageHeadingTitle}>Drills</h2>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <ShipFilterSelect ships={ships} value={shipFilterId} onChange={setShipFilterId} />
-          <button className={styles.button} onClick={() => setIsDialogOpen(true)} type="button">Schedule Drill</button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ShipFilterSelect ships={ships} value={shipFilterId} onChange={onShipFilterChange} />
+          <button className={styles.toolbarPrimaryButton} onClick={() => setIsDialogOpen(true)} type="button">Schedule drill</button>
         </div>
       </div>
 
-      <DrillList drills={filteredDrills} shipById={shipById} crewById={crewById} onAttendance={onAttendance} onComplete={onComplete} />
+      <div className={styles.filterRibbon}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <InnerTabs accent="secondary" embedded tabs={drillStatusTabs} value={selectedDrillStatus} onChange={onDrillStatusFilterChange} />
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <input className={styles.input} type="date" value={scheduledFrom} onChange={(event) => onScheduledFromChange(event.target.value)} />
+            <span className="text-xs font-semibold text-ink-muted">to</span>
+            <input className={styles.input} type="date" value={scheduledTo} onChange={(event) => onScheduledToChange(event.target.value)} />
+            <button className={styles.toolbarIconButton} type="button" aria-label="Reset dates" onClick={() => { onScheduledFromChange(""); onScheduledToChange(""); }}>
+              <i className="bi bi-arrow-counterclockwise" aria-hidden />
+            </button>
+          </div>
+        </div>
+      </div>
 
-      <Dialog
-        description="Select the vessel, date and crew members who must participate."
-        isOpen={isDialogOpen}
-        title="Schedule Safety Drill"
-        onClose={() => setIsDialogOpen(false)}
-      >
+      <DrillList drills={drills} shipById={shipById} crewById={crewById} />
+      <Pagination page={page} pageSize={pageSize} total={total} onPageChange={onPageChange} onPageSizeChange={onPageSizeChange} />
+
+      <Dialog isOpen={isDialogOpen} title="Schedule Drill" onClose={() => setIsDialogOpen(false)}>
         <DrillFormView
           crew={crew}
           drillForm={drillForm}
@@ -99,36 +134,24 @@ function DrillFormView({
   };
 
   return (
-    <form className="grid gap-4" onSubmit={handleSubmit}>
-      <label className={styles.label}>
-        Drill type
-        <input className={styles.input} placeholder="Fire drill" value={drillForm.type} onChange={(event) => onChange({ ...drillForm, type: event.target.value })} required />
-      </label>
-      <div className="grid gap-4 md:grid-cols-2">
-        <label className={styles.label}>
-          Ship
-          <select className={styles.input} value={drillForm.shipId} onChange={(event) => onChange({ ...drillForm, shipId: event.target.value })}>
-            {ships.map((ship) => (
-              <option key={ship.id} value={ship.id}>{ship.name}</option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.label}>
-          Scheduled date
-          <input className={styles.input} type="date" value={drillForm.scheduledDate} onChange={(event) => onChange({ ...drillForm, scheduledDate: event.target.value })} required />
-        </label>
-      </div>
-      <label className={styles.label}>
-        Assigned crew
-        <select className={`${styles.input} min-h-36`} multiple value={drillForm.assignedCrewIds} onChange={updateAssignedCrew}>
-          {crew.map((member) => (
-            <option key={member.id} value={member.id}>{member.name}</option>
+    <form className="grid gap-3" onSubmit={handleSubmit}>
+      <input className={styles.input} placeholder="Drill type" value={drillForm.type} onChange={(event) => onChange({ ...drillForm, type: event.target.value })} required />
+      <div className="grid gap-3 md:grid-cols-2">
+        <select className={styles.input} value={drillForm.shipId} onChange={(event) => onChange({ ...drillForm, shipId: event.target.value })} required>
+          <option value="" disabled>Select ship</option>
+          {ships.map((ship) => (
+            <option key={ship.id} value={ship.id}>{ship.name}</option>
           ))}
         </select>
-        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Hold Ctrl or Cmd to select multiple crew members.</span>
-      </label>
+        <input className={styles.input} type="date" value={drillForm.scheduledDate} onChange={(event) => onChange({ ...drillForm, scheduledDate: event.target.value })} required />
+      </div>
+      <select className={`${styles.input} min-h-32`} multiple value={drillForm.assignedCrewIds} onChange={updateAssignedCrew} required>
+        {crew.map((member) => (
+          <option key={member.id} value={member.id}>{member.name}</option>
+        ))}
+      </select>
       <div className="flex justify-end">
-        <button className={styles.button} disabled={ships.length === 0 || crew.length === 0} type="submit">Schedule Drill</button>
+        <button className={styles.button} disabled={ships.length === 0 || crew.length === 0} type="submit">Schedule</button>
       </div>
     </form>
   );

@@ -1,51 +1,67 @@
+import { useState } from "react";
+import type { InnerTabDef } from "./InnerTabs";
+import { InnerTabs } from "./InnerTabs";
 import { styles } from "../constants";
 import type { CrewMember, MaintenanceTask, SafetyDrill, Ship, TaskStatus } from "../types";
 import type { EntityMap } from "../ui-types";
 import { DrillList } from "./DrillList";
 import { TaskTable } from "./TaskTable";
 
+type CrewWorkTab = "maintenance" | "drills";
+
+const crewWorkTabs: readonly InnerTabDef<CrewWorkTab>[] = [
+  { id: "maintenance", label: "Maintenance", iconClass: "bi bi-wrench-adjustable" },
+  { id: "drills", label: "Drills", iconClass: "bi bi-life-preserver" }
+];
+
 type CrewPanelProps = {
-  crew: CrewMember[];
+  currentCrewId: string;
   crewById: EntityMap<CrewMember>;
   crewDrills: SafetyDrill[];
   crewTasks: MaintenanceTask[];
-  selectedCrewId: string;
   shipById: EntityMap<Ship>;
   onAttendance: (id: string) => void;
   onComplete: (id: string) => void;
-  onCrewChange: (crewId: string) => void;
-  onTaskStatusChange: (id: string, status: TaskStatus) => void;
+  onTaskStatusChange: (id: string, status: TaskStatus, note?: string) => void;
 };
 
 export function CrewPanel({
-  crew,
+  currentCrewId,
   crewById,
   crewDrills,
   crewTasks,
-  selectedCrewId,
   shipById,
   onAttendance,
   onComplete,
-  onCrewChange,
   onTaskStatusChange
 }: CrewPanelProps) {
+  const [workTab, setWorkTab] = useState<CrewWorkTab>("maintenance");
+
   return (
-    <section className={styles.panel}>
-      <h2 className="mb-5 text-2xl font-extrabold text-slate-950 dark:text-white">My Work</h2>
-      <label className={`${styles.label} mb-6 max-w-xs`}>
-        Crew member
-        <select className={styles.input} value={selectedCrewId} onChange={(event) => onCrewChange(event.target.value)}>
-          {crew.map((member) => (
-            <option key={member.id} value={member.id}>{member.name}</option>
-          ))}
-        </select>
-      </label>
+    <section className={styles.panelCrew}>
+      <div className={styles.pageHeadingRow}>
+        <div className={styles.pageHeadingCluster}>
+          <span className={styles.pageHeadingAccent} aria-hidden />
+          <h2 className={styles.pageHeadingTitle}>My work</h2>
+        </div>
+      </div>
 
-      <h3 className="mb-3 text-lg font-extrabold text-slate-950 dark:text-white">Assigned Maintenance</h3>
-      <TaskTable tasks={crewTasks} crewById={crewById} shipById={shipById} onStatus={onTaskStatusChange} />
+      <div className={`${styles.filterRibbon} mb-4`}>
+        <InnerTabs embedded tabs={crewWorkTabs} value={workTab} onChange={setWorkTab} />
+      </div>
 
-      <h3 className="mb-3 mt-8 text-lg font-extrabold text-slate-950 dark:text-white">Upcoming / Assigned Drills</h3>
-      <DrillList drills={crewDrills} shipById={shipById} crewById={crewById} onAttendance={onAttendance} onComplete={onComplete} />
+      {workTab === "maintenance" ? (
+        <TaskTable tasks={crewTasks} crewById={crewById} shipById={shipById} onStatus={onTaskStatusChange} />
+      ) : (
+        <DrillList
+          drills={crewDrills}
+          shipById={shipById}
+          crewById={crewById}
+          currentCrewId={currentCrewId}
+          onAttendance={onAttendance}
+          onComplete={onComplete}
+        />
+      )}
     </section>
   );
 }

@@ -1,5 +1,6 @@
 export type Role = "admin" | "crew";
 export type TaskStatus = "Pending" | "In Progress" | "Completed";
+export type DrillStatusFilter = "" | "Scheduled" | "Completed";
 
 export interface Ship {
   id: string;

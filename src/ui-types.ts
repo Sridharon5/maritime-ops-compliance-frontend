@@ -1,10 +1,18 @@
-import type { CrewMember, Ship } from "./types";
+﻿import type { CrewMember, Ship } from "./types";
 
 export type AdminTab = "Dashboard" | "Ships" | "Crew" | "Maintenance" | "Drills";
 export type CrewTab = "My Work";
 export type AppTab = AdminTab | CrewTab;
 
 export type EntityMap<T extends { id: string }> = Record<string, T>;
+
+export type PaginatedResponse<T> = {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
 
 export type TaskForm = {
   shipId: Ship["id"];

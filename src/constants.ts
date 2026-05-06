@@ -190,6 +190,10 @@ export const styles = {
   flashNotice:
     "rounded-[var(--radius-lg)] border border-notice-border bg-gradient-to-r from-notice-soft via-canvas-elevated to-brand-50/35 px-4 py-3 text-sm font-semibold text-notice-fg shadow-md shadow-brand-900/[0.06] dark:to-brand-950/30",
 
+  /** Compliance dashboard — overdue / missed notification (assessment bonus) */
+  dashboardComplianceAlert:
+    "rounded-[var(--radius-lg)] border border-danger/35 bg-danger-light px-4 py-3 text-sm text-danger-dark shadow-sm lg:col-span-4 dark:border-danger/40 dark:bg-danger/15 dark:text-red-100",
+
   paginationBar:
     "mt-4 rounded-[var(--radius-lg)] border border-line-default bg-gradient-to-r from-canvas-muted/95 via-brand-50/35 to-secondary-50/40 px-4 py-3 shadow-sm ring-1 ring-brand-900/[0.04] dark:border-line-strong dark:bg-gradient-to-r dark:from-canvas-muted dark:via-canvas-elevated dark:to-canvas-muted dark:shadow-inner dark:shadow-black/40 dark:ring-white/[0.08]",
 

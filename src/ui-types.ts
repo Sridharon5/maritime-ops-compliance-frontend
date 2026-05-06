@@ -1,9 +1,8 @@
 import type { CrewMember, Ship } from "./types";
 
-export type AdminTab = "Dashboard" | "Maintenance" | "Drills";
-export type SetupTab = "Ships & Crew";
+export type AdminTab = "Dashboard" | "Ships" | "Crew" | "Maintenance" | "Drills";
 export type CrewTab = "My Work";
-export type AppTab = AdminTab | SetupTab | CrewTab;
+export type AppTab = AdminTab | CrewTab;
 
 export type EntityMap<T extends { id: string }> = Record<string, T>;
 

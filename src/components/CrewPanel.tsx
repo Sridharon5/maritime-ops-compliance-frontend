@@ -31,7 +31,7 @@ export function CrewPanel({
 }: CrewPanelProps) {
   return (
     <section className={styles.panel}>
-      <h2 className="mb-5 text-xl font-extrabold">My Work</h2>
+      <h2 className="mb-5 text-2xl font-extrabold text-slate-950 dark:text-white">My Work</h2>
       <label className={`${styles.label} mb-6 max-w-xs`}>
         Crew member
         <select className={styles.input} value={selectedCrewId} onChange={(event) => onCrewChange(event.target.value)}>
@@ -41,10 +41,10 @@ export function CrewPanel({
         </select>
       </label>
 
-      <h3 className="mb-3 text-lg font-extrabold">Assigned Maintenance</h3>
+      <h3 className="mb-3 text-lg font-extrabold text-slate-950 dark:text-white">Assigned Maintenance</h3>
       <TaskTable tasks={crewTasks} crewById={crewById} shipById={shipById} onStatus={onTaskStatusChange} />
 
-      <h3 className="mb-3 mt-8 text-lg font-extrabold">Upcoming / Assigned Drills</h3>
+      <h3 className="mb-3 mt-8 text-lg font-extrabold text-slate-950 dark:text-white">Upcoming / Assigned Drills</h3>
       <DrillList drills={crewDrills} shipById={shipById} crewById={crewById} onAttendance={onAttendance} onComplete={onComplete} />
     </section>
   );

@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  @apply cursor-pointer disabled:cursor-not-allowed;
 }

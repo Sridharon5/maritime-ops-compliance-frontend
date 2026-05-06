@@ -1,21 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import { crewTabs, emptyCrewForm, emptyDrillForm, emptyShipForm, emptyTaskForm } from "../constants";
-import type { ComplianceSummary, CrewMember, MaintenanceTask, Role, SafetyDrill, Ship, TaskStatus } from "../types";
+import type { CrewMember, MaintenanceTask, Role, SafetyDrill, Ship, TaskStatus } from "../types";
 import type { AppTab, CrewForm, DrillForm, EntityMap, ShipForm, TaskForm } from "../ui-types";
 import { mapById } from "../utils/collections";
 
 export function useMaritimeData() {
   const [activeTab, setActiveTab] = useState<AppTab>("Dashboard");
   const [role, setRole] = useState<Role>("admin");
-  const [selectedShipId, setSelectedShipId] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedCrewId, setSelectedCrewId] = useState("");
   const [ships, setShips] = useState<Ship[]>([]);
   const [crew, setCrew] = useState<CrewMember[]>([]);
   const [tasks, setTasks] = useState<MaintenanceTask[]>([]);
   const [drills, setDrills] = useState<SafetyDrill[]>([]);
-  const [compliance, setCompliance] = useState<ComplianceSummary | null>(null);
   const [shipForm, setShipForm] = useState<ShipForm>(emptyShipForm);
   const [crewForm, setCrewForm] = useState<CrewForm>(emptyCrewForm);
   const [taskForm, setTaskForm] = useState<TaskForm>(emptyTaskForm);
@@ -27,25 +25,21 @@ export function useMaritimeData() {
 
   const loadData = useCallback(async () => {
     const query = new URLSearchParams();
-    if (selectedShipId) query.set("shipId", selectedShipId);
     if (selectedStatus) query.set("status", selectedStatus);
 
     const querySuffix = query.toString() ? `?${query.toString()}` : "";
-    const shipSuffix = selectedShipId ? `?shipId=${selectedShipId}` : "";
 
-    const [shipData, crewData, taskData, drillData, complianceData] = await Promise.all([
+    const [shipData, crewData, taskData, drillData] = await Promise.all([
       api.ships(),
       api.crew(),
       api.maintenance(querySuffix),
-      api.drills(shipSuffix),
-      api.compliance(shipSuffix)
+      api.drills()
     ]);
 
     setShips(shipData);
     setCrew(crewData);
     setTasks(taskData);
     setDrills(drillData);
-    setCompliance(complianceData);
 
     const defaultShipId = shipData[0]?.id ?? "";
     const defaultCrewId = crewData[0]?.id ?? "";
@@ -64,7 +58,7 @@ export function useMaritimeData() {
     }
 
     setCrewForm((current) => (current.shipId ? current : { ...current, shipId: defaultShipId }));
-  }, [selectedCrewId, selectedShipId, selectedStatus]);
+  }, [selectedCrewId, selectedStatus]);
 
   useEffect(() => {
     loadData().catch((error: Error) => setMessage(error.message));
@@ -126,7 +120,6 @@ export function useMaritimeData() {
 
   return {
     activeTab,
-    compliance,
     crew,
     crewById,
     crewDrills: drills.filter((drill) => drill.assignedCrewIds.includes(selectedCrewId)),
@@ -136,7 +129,6 @@ export function useMaritimeData() {
     message,
     role,
     selectedCrewId,
-    selectedShipId,
     selectedStatus,
     shipForm,
     shipById,
@@ -156,7 +148,6 @@ export function useMaritimeData() {
       setDrillForm,
       setRole,
       setSelectedCrewId,
-      setSelectedShipId,
       setSelectedStatus,
       setShipForm,
       setTaskForm,

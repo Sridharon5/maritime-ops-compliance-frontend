@@ -74,6 +74,16 @@ export default function App() {
         <div className="px-5 py-6 sm:px-8">
           <p className="sr-only">{tabDescriptions[data.activeTab]}</p>
 
+          {data.isLoading ? (
+            <p className="mb-3 text-sm font-semibold text-ink-muted">Loading latest data…</p>
+          ) : null}
+
+          {data.loadError ? (
+            <p className="mb-4 rounded-[var(--radius-md)] border border-danger/35 bg-danger-light px-3 py-2 text-sm font-semibold text-danger-dark">
+              {data.loadError}
+            </p>
+          ) : null}
+
           {data.message && (
             <p className={`${styles.flashNotice} mb-4`}>
               {data.message}
